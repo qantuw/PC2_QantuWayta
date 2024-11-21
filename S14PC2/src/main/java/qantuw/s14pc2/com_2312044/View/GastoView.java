@@ -53,7 +53,6 @@ public class GastoView extends JFrame  {
         mainPanel.setBackground(getContentPane().getBackground());
         add(mainPanel, BorderLayout.CENTER);
 
-        // Panel superior: Formulario
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 5, 5));
         formPanel.setBorder(BorderFactory.createTitledBorder("Registrar Gasto"));
         formPanel.setBackground(Color.WHITE);
@@ -84,7 +83,6 @@ public class GastoView extends JFrame  {
 
         mainPanel.add(formPanel, BorderLayout.NORTH);
 
-        // Panel central: Botones de acción
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         buttonPanel.setBackground(getContentPane().getBackground());
 
@@ -106,7 +104,6 @@ public class GastoView extends JFrame  {
 
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Panel derecho: Tabla de gastos
         JPanel tablePanel = new JPanel(new BorderLayout(10, 10));
         tablePanel.setBorder(BorderFactory.createTitledBorder("Listado de Gastos"));
         tablePanel.setBackground(Color.WHITE);
@@ -127,7 +124,6 @@ public class GastoView extends JFrame  {
 
         mainPanel.add(tablePanel, BorderLayout.EAST);
 
-        // Panel inferior: Resumen
         JPanel resumenPanel = new JPanel(new BorderLayout());
         resumenPanel.setBorder(BorderFactory.createTitledBorder("Resumen de Gastos"));
         resumenPanel.setBackground(Color.WHITE);
