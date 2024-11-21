@@ -16,10 +16,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.List;
+import javax.swing.border.EmptyBorder;
 import qantuw.s14pc2.com_2312044.Controller.Controller;
 import qantuw.s14pc2.com_2312044.Model.Gasto;
 
 public class GastoView extends JFrame  {
+
 
     private Controller controller;
 
@@ -40,54 +42,74 @@ public class GastoView extends JFrame  {
 
     private void initUI() {
         setTitle("Gestión de Gastos Personales");
-        setSize(800, 600);
+        setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
+        getContentPane().setBackground(new Color(240, 248, 255)); // Fondo claro
 
-        // Panel superior con el formulario de registro
+        // Espaciado general
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        mainPanel.setBackground(getContentPane().getBackground());
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Panel superior: Formulario
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Registrar Gasto"));
+        formPanel.setBackground(Color.WHITE);
 
-        formPanel.add(new JLabel("Descripción:"));
+        JLabel descripcionLabel = new JLabel("Descripción:");
+        descripcionLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        formPanel.add(descripcionLabel);
         descripcionField = new JTextField();
         formPanel.add(descripcionField);
 
-        formPanel.add(new JLabel("Categoría:"));
+        JLabel categoriaLabel = new JLabel("Categoría:");
+        categoriaLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        formPanel.add(categoriaLabel);
         categoriaCombo = new JComboBox<>(new String[]{"Alimentación", "Transporte", "Entretenimiento", "Salud", "Otros"});
         formPanel.add(categoriaCombo);
 
-        formPanel.add(new JLabel("Monto (S/):"));
+        JLabel montoLabel = new JLabel("Monto (S/):");
+        montoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        formPanel.add(montoLabel);
         montoField = new JTextField();
         formPanel.add(montoField);
 
-        formPanel.add(new JLabel("Fecha (YYYY-MM-DD):"));
+        JLabel fechaLabel = new JLabel("Fecha (YYYY-MM-DD):");
+        fechaLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        formPanel.add(fechaLabel);
         fechaField = new JTextField();
         formPanel.add(fechaField);
 
-        add(formPanel, BorderLayout.NORTH);
+        mainPanel.add(formPanel, BorderLayout.NORTH);
 
-        // Panel con botones de acciones
-        JPanel buttonPanel = new JPanel(new FlowLayout());
+        // Panel central: Botones de acción
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        buttonPanel.setBackground(getContentPane().getBackground());
 
-        JButton registrarButton = new JButton("Registrar Gasto");
+        JButton registrarButton = createStyledButton("Registrar Gasto", Color.GREEN.darker());
         registrarButton.addActionListener(e -> registrarGasto());
         buttonPanel.add(registrarButton);
 
-        JButton listarButton = new JButton("Listar Gastos");
+        JButton listarButton = createStyledButton("Listar Gastos", Color.BLUE.darker());
         listarButton.addActionListener(e -> listarGastos());
         buttonPanel.add(listarButton);
 
-        JButton limpiarButton = new JButton("Limpiar");
+        JButton limpiarButton = createStyledButton("Limpiar Campos", Color.ORANGE.darker());
         limpiarButton.addActionListener(e -> limpiarCampos());
         buttonPanel.add(limpiarButton);
 
-        JButton resumenButton = new JButton("Mostrar Resumen");
+        JButton resumenButton = createStyledButton("Mostrar Resumen", Color.MAGENTA.darker());
         resumenButton.addActionListener(e -> mostrarResumen());
         buttonPanel.add(resumenButton);
 
-        add(buttonPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Panel para mostrar la tabla de gastos
-        JPanel tablePanel = new JPanel(new BorderLayout());
+        // Panel derecho: Tabla de gastos
+        JPanel tablePanel = new JPanel(new BorderLayout(10, 10));
+        tablePanel.setBorder(BorderFactory.createTitledBorder("Listado de Gastos"));
+        tablePanel.setBackground(Color.WHITE);
 
         String[] columnNames = {"ID", "Descripción", "Categoría", "Monto (S/)", "Fecha"};
         tableModel = new DefaultTableModel(columnNames, 0);
@@ -95,18 +117,39 @@ public class GastoView extends JFrame  {
         JScrollPane tableScrollPane = new JScrollPane(gastosTable);
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
 
-        // Filtro de Categoría para la tabla
         filtroCategoriaCombo = new JComboBox<>(new String[]{"Todas", "Alimentación", "Transporte", "Entretenimiento", "Salud", "Otros"});
         filtroCategoriaCombo.addActionListener(e -> filtrarGastosPorCategoria());
-        tablePanel.add(filtroCategoriaCombo, BorderLayout.NORTH);
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        filterPanel.add(new JLabel("Filtrar por categoría:"));
+        filterPanel.add(filtroCategoriaCombo);
+        filterPanel.setBackground(Color.WHITE);
+        tablePanel.add(filterPanel, BorderLayout.NORTH);
 
-        add(tablePanel, BorderLayout.WEST);
+        mainPanel.add(tablePanel, BorderLayout.EAST);
 
-        // Área de resumen de gastos
+        // Panel inferior: Resumen
+        JPanel resumenPanel = new JPanel(new BorderLayout());
+        resumenPanel.setBorder(BorderFactory.createTitledBorder("Resumen de Gastos"));
+        resumenPanel.setBackground(Color.WHITE);
         resumenArea = new JTextArea(5, 30);
         resumenArea.setEditable(false);
-        JScrollPane resumenScrollPane = new JScrollPane(resumenArea);
-        add(resumenScrollPane, BorderLayout.SOUTH);
+        resumenArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        resumenArea.setBackground(new Color(245, 245, 245));
+        resumenPanel.add(new JScrollPane(resumenArea), BorderLayout.CENTER);
+
+        mainPanel.add(resumenPanel, BorderLayout.SOUTH);
+    }
+
+    private JButton createStyledButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(color.darker(), 2),
+                BorderFactory.createEmptyBorder(5, 15, 5, 15)));
+        return button;
     }
 
     private void registrarGasto() {
@@ -120,7 +163,7 @@ public class GastoView extends JFrame  {
             JOptionPane.showMessageDialog(this, "Gasto registrado con éxito", "Registro de Gasto", JOptionPane.INFORMATION_MESSAGE);
 
             limpiarCampos();
-            listarGastos();  // Actualizamos la lista de gastos
+            listarGastos();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -142,8 +185,7 @@ public class GastoView extends JFrame  {
     }
 
     private void actualizarTablaGastos(List<Gasto> gastos) {
-        tableModel.setRowCount(0); // Limpiar la tabla antes de actualizar
-
+        tableModel.setRowCount(0);
         for (Gasto gasto : gastos) {
             tableModel.addRow(new Object[]{
                     gasto.getId(), gasto.getDescripcion(), gasto.getCategoria(),
@@ -173,5 +215,3 @@ public class GastoView extends JFrame  {
         resumenArea.setText(resumen.toString());
     }
 }
-
-
